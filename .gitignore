@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# Données — trop lourdes pour Git
+data/raw/
+data/processed/
+
+# Modèles sauvegardés — versionnés via MLflow
+models/*.pkl
+models/*.json
+
+# MLflow
+mlruns/
+
+# Variables sensibles
+.env
+*.env
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+
+# Rapports générés
+reports/*.html
+reports/*.json
+
+# Docker
+*.log
