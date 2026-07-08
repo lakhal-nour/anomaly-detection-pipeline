@@ -1,16 +1,14 @@
 # .gitlab-ci.yml
-# Pipeline DevSecOps complet pour le projet SIEM Anomaly Detection
-
 stages:
-  - test          # Tests unitaires
-  - security      # Scans de sécurité
-  - build         # Build Docker
-  - scan          # Scan image Docker
-  - deploy        # Déploiement
+  - test
+  - security
+  - build
+  - scan
+  - deploy
 
 variables:
   IMAGE_NAME: "siem-anomaly-detection"
-  IMAGE_TAG:  "$CI_COMMIT_SHORT_SHA"
+  IMAGE_TAG: "$CI_COMMIT_SHORT_SHA"
 
 # ─── STAGE 1 : TESTS ──────────────────────────────────────────
 unit-tests:
@@ -20,18 +18,10 @@ unit-tests:
     - pip install -r requirements.txt
   script:
     - echo "Lancement des tests unitaires..."
-    - pytest tests/ -v --cov=src --cov-report=term-missing
-  coverage: '/TOTAL.*\s+(\d+%)$/'
-  artifacts:
-    reports:
-      coverage_report:
-        coverage_format: cobertura
-        path: coverage.xml
+    - python -m pytest tests/ -v
   allow_failure: false
 
 # ─── STAGE 2 : SÉCURITÉ ───────────────────────────────────────
-
-# SAST — analyse statique du code Python
 bandit-sast:
   stage: security
   image: python:3.12-slim
@@ -39,16 +29,10 @@ bandit-sast:
     - pip install bandit
   script:
     - echo "Scan SAST avec Bandit..."
-    - bandit -r src/ -f json -o reports/bandit-report.json || true
     - bandit -r src/ -f txt
     - bandit -r src/ --severity-level medium --exit-zero
-  artifacts:
-    paths:
-      - reports/bandit-report.json
-    expire_in: 1 week
-  allow_failure: true   # ne bloque pas si failles mineures
+  allow_failure: true
 
-# SCA — vérification des dépendances
 safety-sca:
   stage: security
   image: python:3.12-slim
@@ -59,7 +43,6 @@ safety-sca:
     - safety check -r requirements.txt --output text || true
   allow_failure: true
 
-# Détection de secrets dans le code
 gitleaks:
   stage: security
   image:
@@ -78,13 +61,11 @@ build-docker:
     - docker:24-dind
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
-  before_script:
-    - docker info
   script:
     - echo "Build de l image Docker..."
     - docker build -t $IMAGE_NAME:$IMAGE_TAG .
     - docker build -t $IMAGE_NAME:latest .
-    - echo "Image construite : $IMAGE_NAME:$IMAGE_TAG"
+    - echo "Image construite avec succes"
   allow_failure: false
 
 # ─── STAGE 4 : SCAN IMAGE ─────────────────────────────────────
@@ -95,10 +76,7 @@ trivy-scan:
     entrypoint: [""]
   script:
     - echo "Scan image Docker avec Trivy..."
-    - trivy image --exit-code 0
-                  --severity HIGH,CRITICAL
-                  --format table
-                  $IMAGE_NAME:latest
+    - trivy image --exit-code 0 --severity HIGH,CRITICAL --format table $IMAGE_NAME:latest
   allow_failure: true
   needs: ["build-docker"]
 
@@ -107,8 +85,8 @@ deploy-staging:
   stage: deploy
   image: python:3.12-slim
   script:
-    - echo "Déploiement en staging..."
-    - echo "Image $IMAGE_NAME:$IMAGE_TAG prête pour Kubernetes"
+    - echo "Image $IMAGE_NAME:$IMAGE_TAG prete pour deploiement"
+    - echo "Pipeline DevSecOps complete avec succes"
   environment:
     name: staging
   only:
