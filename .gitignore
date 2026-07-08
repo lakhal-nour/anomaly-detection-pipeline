@@ -34,3 +34,5 @@ reports/*.json
 
 # Docker
 *.log
+mlruns/
+mlflow.db
