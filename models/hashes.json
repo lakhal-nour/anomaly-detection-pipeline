@@ -1,0 +1,14 @@
+{
+  "isolation_forest": {
+    "path": "models/isolation_forest.pkl",
+    "sha256": "d3c9afd46c9d41c30676a77779a48cc3b362034125e7102e7d20312575c1aa37"
+  },
+  "random_forest": {
+    "path": "models/random_forest.pkl",
+    "sha256": "cd68d0710cb520e7200de460ea9854afc857b6aca23d3fdd2dafdc89b4c66172"
+  },
+  "scaler": {
+    "path": "models/scaler.pkl",
+    "sha256": "50863a5307bdd1bc451b934f0f1666507674ed00987ed0132a35fdc569b51803"
+  }
+}

@@ -77,3 +77,21 @@ class ModelLoader:
 
 # Instance globale — chargée une seule fois
 model_loader = ModelLoader()
+
+def load_with_integrity_check(self):
+    """
+    Charge le modèle avec vérification d'intégrité.
+    Protection contre CVE-2024-37058 (MLflow) et CVE-2024-37065 (Skops).
+    """
+    from api.model_integrity import verify_integrity
+
+    print("Vérification de l'intégrité des modèles (protection CVE-2024-37058)...")
+    if not verify_integrity():
+        raise SecurityError(
+            "ALERTE: Intégrité des modèles compromise — chargement refusé"
+        )
+    print("Intégrité vérifiée ✅ — chargement du modèle...")
+    self.load()
+
+class SecurityError(Exception):
+    pass
