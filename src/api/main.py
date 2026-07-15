@@ -23,7 +23,7 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def startup_event():
-    os.chdir("/home/nour/anomaly-detection-pipeline")
+    os.chdir("/app")
     model_loader.load()
     print("API v2.0 démarrée avec contrôle d'accès ✅")
 
@@ -81,3 +81,18 @@ async def detect_anomaly(
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+# ─── Métriques Prometheus ─────────────────────────────────────
+from prometheus_client import Counter, Histogram, generate_latest
+from fastapi.responses import PlainTextResponse
+import time
+
+# Compteurs
+REQUESTS_TOTAL    = Counter('siem_requests_total', 'Total requêtes', ['endpoint'])
+ANOMALIES_TOTAL   = Counter('siem_anomalies_total', 'Total anomalies détectées')
+LATENCY_HISTOGRAM = Histogram('siem_request_duration_seconds', 'Latence des requêtes')
+
+@app.get("/metrics", response_class=PlainTextResponse)
+async def metrics():
+    """Endpoint Prometheus — expose les métriques."""
+    return generate_latest()

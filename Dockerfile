@@ -1,26 +1,24 @@
-# Dockerfile
 FROM python:3.12-slim
 
 LABEL maintainer="lakhal-nour"
 LABEL project="SIEM-Anomaly-Detection"
-LABEL version="1.0.0"
+LABEL version="2.0.0"
 
 WORKDIR /app
 
-# Copier et installer les dépendances
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Utiliser le requirements minimal pour Docker
+COPY requirements-docker.txt .
+RUN pip install --no-cache-dir -r requirements-docker.txt
 
-# Copier le code source
+# Copier le code
 COPY src/ ./src/
 COPY models/ ./models/
 
-# Port exposé
 EXPOSE 8002
 
-# Utilisateur non-root pour la sécurité
-RUN useradd -m -u 1000 appuser
+# Utilisateur non-root
+RUN useradd -m -u 1000 appuser && \
+    chown -R appuser:appuser /app
 USER appuser
 
-# Lancer l'API
 CMD ["python", "-m", "uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8002"]
