@@ -1,14 +1,14 @@
 {
   "isolation_forest": {
     "path": "models/isolation_forest.pkl",
-    "sha256": "d3c9afd46c9d41c30676a77779a48cc3b362034125e7102e7d20312575c1aa37"
+    "sha256": "bc23bcf646bf47b4bac991abcb0637366f48cf96dab8ac321a0a5c97fdbe1271"
   },
   "random_forest": {
     "path": "models/random_forest.pkl",
-    "sha256": "cd68d0710cb520e7200de460ea9854afc857b6aca23d3fdd2dafdc89b4c66172"
+    "sha256": "862763ad544d3c70b2090a7f59fe0ac9dd81411083a07328d92fa80aeb1c22bc"
   },
   "scaler": {
     "path": "models/scaler.pkl",
-    "sha256": "50863a5307bdd1bc451b934f0f1666507674ed00987ed0132a35fdc569b51803"
+    "sha256": "3741e4cc6abf76b2c9a145a5df464ed0ecd64fd5663fc33c52841aa1814f8acf"
   }
 }
